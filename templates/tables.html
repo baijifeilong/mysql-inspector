@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh_CN" style="width: 100%; height: 100%; font-size: 1.2em">
+<head>
+    <meta charset="UTF-8">
+    <title>数据库透视</title>
+</head>
+<body style="width: 100%; margin: 0; display: flex; justify-content: center; box-sizing: border-box; padding: 1rem; flex-direction: column">
+<h1>数据表</h1>
+<table border="1" style="flex-grow: 1;border-collapse: collapse">
+    <thead></thead>
+    <tbody>
+    {% for table in tables %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ table["TABLE_SCHEMA"] }}</td>
+            <td>{{ table["TABLE_NAME"] }}</td>
+            <td><a target="_blank"
+                   href="{{ url_for("database.show_table", schema=table["TABLE_SCHEMA"], table=table["TABLE_NAME"]) }}">{{ table["TABLE_NAME"] }}</a>
+            </td>
+            <td>{{ table["TABLE_COMMENT"] }}</td>
+            <td>{{ table["TABLE_ROWS"] }}</td>
+            <td>{{ table["CREATE_TIME"] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

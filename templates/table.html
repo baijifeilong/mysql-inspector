@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh_CN" style="width: 100%; height: 100%; font-size: 1.2em">
+<head>
+    <meta charset="UTF-8">
+    <title>数据表透视</title>
+    <style>
+        a, a:visited, a:hover, a:active {
+            color: inherit;
+        }
+    </style>
+</head>
+<body style="width: 100%; height: 100%; box-sizing: border-box; margin: 0; padding: 0.5em; display: flex; justify-content: start; flex-direction: column">
+
+<h1>表信息</h1>
+<table border="1" style="border-collapse: collapse">
+    <tbody>
+    <tr>
+        <td>Name</td>
+        <td>{{ info["TABLE_NAME"] }}</td>
+    </tr>
+    <tr>
+        <td>Comment</td>
+        <td>{{ info["TABLE_COMMENT"] }}</td>
+    </tr>
+    <tr>
+        <td>Rows</td>
+        <td>{{ info["TABLE_ROWS"] }}</td>
+    </tr>
+    <tr>
+        <td>Created At</td>
+        <td>{{ info["CREATE_TIME"] }}</td>
+    </tr>
+    </tbody>
+</table>
+<h1>数据列</h1>
+<table border="1" style="border-collapse: collapse">
+    <thead></thead>
+    <tbody>
+    {% for column in column_dict.values() %}
+        <tr>
+            <td>{{ column["COLUMN_NAME"] }}</td>
+            <td>{{ column["COLUMN_COMMENT"] }}</td>
+            <td>{{ column["COLUMN_TYPE"] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<h1>示例数据</h1>
+{% for sample in samples %}
+    <h2>示例数据 {{ loop.index }}</h2>
+    <table border="1" style="border-collapse: collapse">
+        <tbody>
+        {% for k,v in sample.items() %}
+            <tr>
+                <td>{{ k }}</td>
+                <td>{{ column_dict[k]["COLUMN_COMMENT"] }}</td>
+                <td style="word-break: break-all">{{ v if v != None else "<null>" }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+</body>
+</html>
