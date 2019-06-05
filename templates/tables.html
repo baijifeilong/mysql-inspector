@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>数据库透视</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/>
 </head>
 <body style="width: 100%; margin: 0; display: flex; justify-content: center; box-sizing: border-box; padding: 1rem; flex-direction: column">
 <h1>数据表</h1>
@@ -13,9 +14,8 @@
         <tr>
             <td>{{ loop.index }}</td>
             <td>{{ table["TABLE_SCHEMA"] }}</td>
-            <td>{{ table["TABLE_NAME"] }}</td>
             <td><a target="_blank"
-                   href="{{ url_for("database.show_table", schema=table["TABLE_SCHEMA"], table=table["TABLE_NAME"]) }}">{{ table["TABLE_NAME"] }}</a>
+                   href="{{ url_for("show_table", schema=table["TABLE_SCHEMA"], table=table["TABLE_NAME"]) }}">{{ table["TABLE_NAME"] }}</a>
             </td>
             <td>{{ table["TABLE_COMMENT"] }}</td>
             <td>{{ table["TABLE_ROWS"] }}</td>
