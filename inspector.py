@@ -1,19 +1,26 @@
+import logging
 import os
 import random
 from argparse import ArgumentParser
 
+import colorlog
 import flask
 import mysql.connector
-from colorlog import logging
+
+
+LOG_FORMAT_CONSOLE = "%(log_color)s%(asctime)s %(levelname)8s %(name)-10s %(message)s"
+LOG_FORMATTER_CONSOLE = colorlog.ColoredFormatter(LOG_FORMAT_CONSOLE)
+LOG_HANDLER_CONSOLE = colorlog.StreamHandler()
+LOG_HANDLER_CONSOLE.setFormatter(LOG_FORMATTER_CONSOLE)
+logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().addHandler(LOG_HANDLER_CONSOLE)
 
 os.environ.setdefault("FLASK_ENV", "development")
-logging.basicConfig(level='INFO', datefmt='%Y-%m-%d %H:%M:%S',
-                    format='%(black)s%(asctime)s.%(msecs)03d %(log_color)s%(levelname)8s%(reset)s %(black)s%(name)-10s %(message)s')
 app = flask.Flask(__name__)
 
 parser = ArgumentParser()
 parser.add_argument("--host", "-H", default="127.0.0.1", help="Hostname of MySQL")
-parser.add_argument("--port", default="3306", help="Port of MySQL")
+parser.add_argument("--port", "-P", default="3306", help="Port of MySQL")
 parser.add_argument("--user", "-u", default="root", help="Username of MySQL")
 parser.add_argument("--password", "-p", default="root", help="Password of MySQL")
 parser.add_argument("--bind", "-b", default="0.0.0.0", help="Bind network address")
@@ -39,6 +46,7 @@ def fetch_tables():
 SELECT *
 FROM information_schema.TABLES
 WHERE TABLE_SCHEMA NOT IN ('mysql', 'sys', 'information_schema', 'performance_schema')
+ORDER BY TABLE_SCHEMA, TABLE_NAME
 """)
     tables = cursor.fetchall()
     return tables
@@ -67,7 +75,7 @@ def fetch_sample(schema: str, table: str):
     columns = fetch_columns(schema, table)
     primary_column = next(filter(lambda x: x["COLUMN_KEY"] == "PRI", columns), None)
     primary_key = primary_column["COLUMN_NAME"] if primary_column else None
-    primary_key_is_integer = 'int' in primary_column["COLUMN_TYPE"] if primary_column else False
+    primary_key_is_integer = b'int' in primary_column["COLUMN_TYPE"] if primary_column else False
     conn = connect_mysql()
     conn.database = schema
     cursor = conn.cursor(dictionary=True)
